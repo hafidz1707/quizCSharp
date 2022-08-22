@@ -98,25 +98,34 @@ namespace QuizWangi
 
             // 3. Find people who have purchases with grand total lower than 300000. The output is an array of people name. Duplicate name is not allowed.
             Console.WriteLine("All people who spent money less than 300k:");
-            String[] personEconomical = {};
+            // string[] personEconomical = {};
+            // int[] personIdEconomical = {};
+            Dictionary<int, string> customerDict = new Dictionary<int, string>();
             var groupedOrder = orders.GroupBy(thing => thing.customer.name);
-            foreach (var element in groupedOrder)
+            foreach (var order in groupedOrder)
             {
                 int groupedPrice = 0;
-                foreach (List<Item> element2 in element.Select(thing => thing.items))
+                foreach (List<Item> item in order.Select(thing => thing.items))
                 {
-                    groupedPrice += element2.Sum(e => e.qty * e.price);
+                    groupedPrice += item.Sum(e => e.qty * e.price);
                 }
-                String customerName = element.Select(thing => thing.customer.name).First();
+                int customerID = order.Select(thing => thing.customer.id).First();
+                string customerName = order.Select(thing => thing.customer.name).First();
                 if (groupedPrice < 300000)
                 {
-                    if (!personEconomical.Contains(customerName))
+                    // if (!personIdEconomical.Contains(customerID))
+                    // {
+                    //     personIdEconomical = personIdEconomical.Append(customerID).ToArray();
+                    //     personEconomical = personEconomical.Append(customerName).ToArray();
+                    // }
+                    if (!customerDict.ContainsKey(customerID))
                     {
-                        personEconomical = personEconomical.Append(customerName).ToArray();
+                        customerDict.Add(customerID, customerName);
                     }
                 }
             }
-            Console.WriteLine(JsonSerializer.Serialize(personEconomical));
+            //Console.WriteLine(JsonSerializer.Serialize(personEconomical));
+            Console.WriteLine(JsonSerializer.Serialize(customerDict.Values));
         }
     }
 }   
